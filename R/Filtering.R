@@ -1,7 +1,7 @@
 library(VariantAnnotation)
 
 temp_dir <- tempdir()
-
+sVPF <- "/Users/naumraskind/Desktop/Research/SoftwareComparison/somatic_data/SI_8362.SI_8363-tnscope.vcf.gz"
 # filters a file, creates a .bgz, and .bgz.tbi, and stores them in temp_dir
 filter_one_sample <- function(vcf_input_file){
   
@@ -59,6 +59,8 @@ filter_one_sample <- function(vcf_input_file){
   # creates a vcf file to accompany the bgzip and tabix files for siglasso
   # system(paste("bgzip -cd ", filter_destination_zipped, " > ", filter_destination, sep=""))
   
-  ## return file path to the bgzipped vcf file
+  # return the file path to the bgzipped vcf file
   return(filter_destination_zipped)
 }
+
+vcf_file_input <- filter_one_sample(sVPF)

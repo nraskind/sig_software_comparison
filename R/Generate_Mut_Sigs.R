@@ -10,7 +10,7 @@ library(BSgenome.Hsapiens.UCSC.hg19)
 # SignatureEstimation (qp)
 library(SignatureEstimation)
 
-# generatng trinucleotide context
+# generatng trinucleotide matrix
 library(MutationalPatterns)
 
 # reference genome
@@ -88,8 +88,8 @@ ds_mut_df <- create_signature_df("ds", tri_mut_matrix=mut_matrix)
 sl_mut_df <- create_signature_df("sl", tri_mut_matrix=mut_matrix)
 qp_mut_df <- create_signature_df("qp", tri_mut_matrix=mut_matrix)
 
-# create subsamples with 5, 10, 25, 50, and 100 variants
-# simulation_repeats (25) simulations/columns each
+# create subsample trinucleotide matrices with 5, 10, 25, 50, and 100
+# variants and simulation_repeats (25) different combinations/columns each
 create_subsample_dfs <- function(numvars, mut_matrix, simulation_repeats=25) {
   num_subs <- as.data.frame(sapply(1:simulation_repeats, function(x){
     subsample_mut_matrix(mut_matrix, numvars)
@@ -107,7 +107,7 @@ hundred_subs <- create_subsample_dfs(100, mut_matrix)
 
 # generates a data frame of mutational signatures for every column of
 # the above subsample df's with the specified software
-software_subsample_dfs <- function(software, subsample_df) {
+subsample_to_mut_sigs <- function(software, subsample_df) {
   if (software == "sl") {
     # right now siglasso is the only one that can take multiple samples at once
     mut_sigs_output <- create_signature_df("sl", subsample_df)

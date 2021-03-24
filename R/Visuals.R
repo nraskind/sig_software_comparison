@@ -11,24 +11,21 @@ ggbar_plot_sigs <- function(mut_sigs_df){
   return(gg_sig_plot)
 }
 
-plot_cosine <- function(plot_input, software="") {
-  mean_vals <- as.numeric(plot_input[,1])
-  variance_vals <- as.numeric(plot_input[,3])
+plot_stats <- function(plot_input, method="cosine", software="") {
+  if (method == "cosine") {
+    mean_vals <- as.numeric(plot_input[,1])
+    variance_vals <- as.numeric(plot_input[,3])
+    measuring <- paste(method, "similarity")
+  }
+  if (method == "euclidean") {
+    mean_vals <- as.numeric(plot_input[,2])
+    variance_vals <- as.numeric(plot_input[,4])
+    measuring <- paste(method, "distance")
+  }
   
   ggplot(plot_input, aes( x=c(5, 10, 25, 50, 100) )) +
     geom_line(aes(y=mean_vals), colour="black") +
-    ggtitle(paste(software, "cosine similarity")) + xlab("number of variants") + ylab("cosine similarity") +
-    geom_errorbar( aes(ymin=(mean_vals - variance_vals),
-                       ymax=(mean_vals + variance_vals)))
-}
-
-plot_euclid <- function(plot_input, software="") {
-  mean_vals <- as.numeric(plot_input[,2])
-  variance_vals <- as.numeric(plot_input[,4])
-  
-  ggplot(plot_input, aes( x=c(5, 10, 25, 50, 100) )) +
-    geom_line(aes(y=mean_vals), colour="black") +
-    ggtitle(paste(software, "euclidean distance")) + xlab("number of variants") + ylab("euclidean distance") +
+    ggtitle(paste(software, measuring)) + xlab("number of variants") + ylab(measuring) +
     geom_errorbar( aes(ymin=(mean_vals - variance_vals),
                        ymax=(mean_vals + variance_vals)))
 }

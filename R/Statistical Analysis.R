@@ -41,7 +41,7 @@ calculate_all_stats <- function(mut_sub_matrix, mut_full_df) {
 create_plot_input <- function(software, mut_full_df) {
   graphable_all_muts <- lapply(list(five_subs, ten_subs, twenty_five_subs, fifty_subs, hundred_subs),
          function(subsample_df){
-           software_output <- software_subsample_dfs(software, subsample_df)
+           software_output <- subsample_to_mut_sigs(software, subsample_df)
            stats_matrix <- calculate_all_stats(software_output, mut_full_df)
            return(stats_matrix)
          })
