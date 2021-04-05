@@ -31,6 +31,16 @@ trim_low_intesity_sigs <- function(mut_sigs_matrix) {
   return(trimmed_sigs)
 }
 
+# normalizes (counts --> frequencies) the trinucleotides in a 96 x 1 matrix
+normalize_mut_matrix <- function(tri_mut_matrix) {
+  total_muts <- sum(tri_mut_matrix[,1])
+  normalized_muts <- tri_mut_matrix[,1] / total_muts
+  normalized_muts <- matrix(normalized_muts,
+                            dimnames = list(rownames(tri_mut_matrix),
+                                            colnames(tri_mut_matrix)))
+  return(normalized_muts)
+}
+
 # creates a trinucleotide context matrix from (a) vcf file
 create_mut_matrix <- function(vcf_files_input, reference_genome=bsg38) {
   vcf_list <- MutationalPatterns::read_vcfs_as_granges(
@@ -72,6 +82,7 @@ create_signature_df <- function(software, tri_mut_matrix) {
     colnames(ds_mut_sigs) <- paste("ds", colnames(ds_mut_sigs), sep=".")
     return(ds_mut_sigs)
   } else if (software == "qp") {
+    tri_mut_matrix <- normalize_mut_matrix(tri_mut_matrix)
     qp_mut_sigs <- as.data.frame( SignatureEstimation::decomposeQP(m = tri_mut_matrix,
                                                                    P = t(signatures.cosmic)),
                                   row.names = rownames(signatures.cosmic))
@@ -90,7 +101,7 @@ qp_mut_df <- create_signature_df("qp", tri_mut_matrix=mut_matrix)
 
 # create subsample trinucleotide matrices with 5, 10, 25, 50, and 100
 # variants and simulation_repeats (25) different combinations/columns each
-create_subsample_dfs <- function(numvars, mut_matrix, simulation_repeats=25) {
+create_subsample_dfs <- function(numvars, mut_matrix, simulation_repeats=100) {
   num_subs <- as.data.frame(sapply(1:simulation_repeats, function(x){
     subsample_mut_matrix(mut_matrix, numvars)
   }))
